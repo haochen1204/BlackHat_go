@@ -1,0 +1,5 @@
+admin
+www
+test
+dns
+image
