@@ -43,21 +43,28 @@ func main() {
 		name := req.Question[0].Name
 		parts := strings.Split(name, ".")
 		if len(parts) > 1 {
-			name = strings.Join(parts[len(parts)-2:], ".")
+			name = fmt.Sprintf("%s.%s", parts[len(parts)-3], parts[len(parts)-2])
 		}
 		match, ok := records[name]
 		if !ok {
 			dns.HandleFailed(w, req)
 			return
 		}
+		fmt.Println(name)
+		fmt.Println(match)
+		fmt.Println(req)
 		resp, err := dns.Exchange(req, match)
 		if err != nil {
-			dns.HandleFailed(w, req)
-		}
-		if err := w.WriteMsg(resp); err != nil {
+			fmt.Println(err)
 			dns.HandleFailed(w, req)
 			return
 		}
+		if err := w.WriteMsg(resp); err != nil {
+			dns.HandleFailed(w, req)
+			fmt.Println("1")
+			return
+		}
+		fmt.Println(resp)
 	})
 	log.Fatal(dns.ListenAndServe(":53", "udp", nil))
 }
